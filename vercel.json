@@ -1,16 +1,11 @@
 {
   "version": 2,
-  "functions": {
-    "api/*.py": {
-      "runtime": "vercel-python@0.5.2"
-    }
-  },
   "builds": [
-    { "src": "api/*.py", "use": "@vercel/python" },
+    { "src": "api/recommend.py", "use": "@vercel/python" },
     { "src": "index.html", "use": "@vercel/static" }
   ],
   "routes": [
-    { "src": "/api/recommend", "dest": "api/recommend.py" },
+    { "src": "/api/recommend", "dest": "/api/recommend.py" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
