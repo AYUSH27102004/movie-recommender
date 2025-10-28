@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Movie Recommender</title>
+  <style>
+    body { font-family: system-ui, Arial, sans-serif; margin: 24px; max-width: 720px }
+    h1 { margin-bottom: 8px }
+    .box { padding:16px; border:1px solid #ddd; border-radius:12px }
+    select, button { padding:10px; font-size:16px; }
+    ul { line-height:1.8 }
+  </style>
+</head>
+<body>
+  <h1>🎬 Movie Recommendation System</h1>
+  <p>Pick a movie to get similar recommendations.</p>
+
+  <div class="box">
+    <label>Movie: </label>
+    <select id="title"></select>
+    <label style="margin-left:12px;">Top K:</label>
+    <input id="k" type="number" value="10" min="5" max="20" style="width:70px;padding:8px;">
+    <button id="go">Recommend</button>
+  </div>
+
+  <h2>Recommended</h2>
+  <ul id="out"></ul>
+
+  <script>
+    const titleSel = document.getElementById("title");
+    const out = document.getElementById("out");
+
+    async function loadTitles() {
+      const res = await fetch("/api/recommend?list=1");
+      const data = await res.json();
+      titleSel.innerHTML = data.titles.map(t => `<option>${t}</option>`).join("");
+    }
+    loadTitles();
+
+    document.getElementById("go").onclick = async () => {
+      out.innerHTML = "<li>Loading…</li>";
+      const k = document.getElementById("k").value || 10;
+      const t = titleSel.value;
+      const res = await fetch(`/api/recommend?title=${encodeURIComponent(t)}&k=${k}`);
+      const data = await res.json();
+      out.innerHTML = data.recommendations.map(r => `<li>${r}</li>`).join("");
+    };
+  </script>
+</body>
+</html>
